@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Add Transaction — FinWise Africa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Add Transaction</h2>
+    <p>Record your income or expense</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card p-4">
+            <form method="POST" id="transactionForm">
+                <!-- Type Toggle -->
+                <div class="mb-4">
+                    <label class="form-label">Transaction Type</label>
+                    <div class="d-flex gap-3">
+                        <div class="type-btn flex-fill text-center p-3 rounded-3 border-2 border" 
+                             id="btn-income" onclick="setType('income')"
+                             style="cursor:pointer; border-color:#00A86B!important; background:#E6F7F1;">
+                            <i class="bi bi-arrow-down-circle-fill text-success fs-4"></i>
+                            <div class="fw-700 mt-1 text-success">Income</div>
+                        </div>
+                        <div class="type-btn flex-fill text-center p-3 rounded-3 border-2 border"
+                             id="btn-expense" onclick="setType('expense')"
+                             style="cursor:pointer;">
+                            <i class="bi bi-arrow-up-circle-fill text-danger fs-4"></i>
+                            <div class="fw-700 mt-1 text-danger">Expense</div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="type" id="typeInput" value="income">
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select name="category" class="form-select" id="categorySelect" required>
+                        <optgroup label="Income Categories" id="incomeGroup">
+                            {% for cat in income_categories %}
+                                <option value="{{ cat }}">{{ cat }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        <optgroup label="Expense Categories" id="expenseGroup" style="display:none">
+                            {% for cat in expense_categories %}
+                                <option value="{{ cat }}">{{ cat }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Amount -->
+                <div class="mb-3">
+                    <label class="form-label">Amount ({{ current_user.currency }})</label>
+                    <input type="number" name="amount" class="form-control" 
+                           placeholder="0.00" step="0.01" min="0" required>
+                </div>
+
+                <!-- Date -->
+                <div class="mb-3">
+                    <label class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control" 
+                           value="{{ now }}" required>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <label class="form-label">Description <span class="text-muted fw-400">(optional)</span></label>
+                    <input type="text" name="description" class="form-control" 
+                           placeholder="Brief note about this transaction">
+                </div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-primary flex-fill">
+                        <i class="bi bi-check-lg me-2"></i>Save Transaction
+                    </button>
+                    <a href="{{ url_for('transactions.index') }}" class="btn btn-outline-secondary flex-fill">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Set today's date
+    document.querySelector('input[name="date"]').value = new Date().toISOString().split('T')[0];
+
+    function setType(type) {
+        document.getElementById('typeInput').value = type;
+
+        const incomeBtn = document.getElementById('btn-income');
+        const expenseBtn = document.getElementById('btn-expense');
+        const incomeGroup = document.getElementById('incomeGroup');
+        const expenseGroup = document.getElementById('expenseGroup');
+
+        if (type === 'income') {
+            incomeBtn.style.background = '#E6F7F1';
+            incomeBtn.style.borderColor = '#00A86B';
+            expenseBtn.style.background = '';
+            expenseBtn.style.borderColor = '';
+            incomeGroup.style.display = '';
+            expenseGroup.style.display = 'none';
+            // Select first income option
+            document.querySelector('#incomeGroup option').selected = true;
+        } else {
+            expenseBtn.style.background = '#FDECEA';
+            expenseBtn.style.borderColor = '#E63946';
+            incomeBtn.style.background = '';
+            incomeBtn.style.borderColor = '';
+            incomeGroup.style.display = 'none';
+            expenseGroup.style.display = '';
+            document.querySelector('#expenseGroup option').selected = true;
+        }
+    }
+</script>
+{% endblock %}
