@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}AI Recommendations - FinWise Africa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>AI Recommendations</h2>
+    <p>Personalized financial advice based on your data</p>
+</div>
+
+<div class="card p-4 mb-4" style="background: linear-gradient(135deg, #0D1B2A, #1A3A2A); color:white;">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h5 class="fw-bold mb-1">Your Financial Health Score</h5>
+            <p class="mb-0" style="color:#A8C5B5; font-size:0.88rem;">Based on this month income and spending patterns</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            {% if total_income > 0 %}
+                {% set savings_rate = ((total_income - total_expenses) / total_income * 100) | round(1) %}
+                <div style="font-size:2.2rem; font-weight:800; color:#00A86B;">{{ savings_rate }}%</div>
+                <small style="color:#A8C5B5;">Savings Rate</small>
+            {% else %}
+                <div style="font-size:1rem; color:#A8C5B5;">Add data to see score</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+{% for rec in recommendations %}
+    <div class="col-md-6">
+        <div class="card p-4 h-100" style="border-left: 4px solid
+            {% if rec.type == 'success' %}#00A86B
+            {% elif rec.type == 'warning' %}#FFB800
+            {% elif rec.type == 'danger' %}#E63946
+            {% else %}#3A86FF{% endif %};">
+            <div class="d-flex align-items-start gap-3">
+                <div style="font-size:1.8rem;">{{ rec.icon }}</div>
+                <div>
+                    <h6 class="fw-bold mb-1">{{ rec.title }}</h6>
+                    <p class="text-muted mb-0" style="font-size:0.88rem; line-height:1.6;">{{ rec.message }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<div class="card p-4 mt-4">
+    <h6 class="fw-bold mb-3">Financial Tips for Kenya and Africa</h6>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="p-3 rounded-3" style="background:#E6F7F1;">
+                <div class="fw-bold small mb-1">SACCOs and Chamas</div>
+                <p class="small text-muted mb-0">Join a SACCO or Chama to access affordable credit and grow savings collectively.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 rounded-3" style="background:#FFF8E1;">
+                <div class="fw-bold small mb-1">M-Pesa Lock Savings</div>
+                <p class="small text-muted mb-0">Use M-Pesa lock savings feature to avoid impulse spending and earn interest.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 rounded-3" style="background:#EEF4FF;">
+                <div class="fw-bold small mb-1">Money Market Funds</div>
+                <p class="small text-muted mb-0">Invest in NSE-listed Money Market Funds for better returns than savings accounts.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
