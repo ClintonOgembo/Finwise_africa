@@ -16,7 +16,7 @@ class Transaction(db.Model):
     def __repr__(self):
         return f'<Transaction {self.type} {self.amount}>'
 
-# Expense categories relevant to Kenya/Africa
+
 EXPENSE_CATEGORIES = [
     'Food & Groceries',
     'Transport & Fuel',
