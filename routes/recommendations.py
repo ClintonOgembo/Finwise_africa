@@ -5,6 +5,7 @@ from models import db
 from sqlalchemy import func
 from datetime import datetime, date
 from ml.advisor import generate_recommendations
+import os
 
 recommendations_bp = Blueprint('recommendations', __name__)
 
@@ -36,8 +37,12 @@ def index():
 
     recommendations = generate_recommendations(total_income, total_expenses, expense_by_category)
 
+    model_path = os.path.join(os.path.dirname(__file__), '..', 'ml', 'model_data', 'advisor_model.pkl')
+    model_trained = os.path.exists(model_path)
+
     return render_template('recommendations/index.html',
         recommendations=recommendations,
         total_income=total_income,
-        total_expenses=total_expenses
+        total_expenses=total_expenses,
+        model_trained=model_trained
     )
